@@ -531,38 +531,58 @@ function MainPage() {
       </section>
 
       {/* Footer */}
-      <footer className="footer">
-        <div className="footer-content">
-          <div className="footer-brand">
-            <div className="app-logo">🌾</div>
-            <h2>FarmUp</h2>
-            <p>Cultivating Smarter Futures</p>
-          </div>
-          
-          <div className="footer-links">
-            <div className="footer-column">
-              <h3>Resources</h3>
-              <a href="#weather">Weather</a>
-              <a href="#prices">Market Prices</a>
-              <a href="#knowledge">Crop Information</a>
-              <a href="#knowledge">Soil Health</a>
-            </div>
-            
-            <div className="footer-column">
-              <h3>Support</h3>
-              <a href="#" onClick={() => setShowHelp(true)}>Help Center</a>
-              <a href="#">Contact Us</a>
-              <a href="#">FAQ</a>
-            </div>
-            
-            <div className="footer-column">
-              <h3>Company</h3>
-              <a href="#">About Us</a>
-              <a href="#">Privacy Policy</a>
-              <a href="#">Terms of Service</a>
-            </div>
-          </div>
-        </div>
+<footer className="footer">
+  <div className="footer-content">
+    <div className="footer-brand">
+      <div className="app-logo">🌾</div>
+      <h2>FarmUp</h2>
+      <p>Cultivating Smarter Futures</p>
+    </div>
+    
+    <div className="footer-links">
+      <div className="footer-column">
+        <h3>Resources</h3>
+        <button onClick={() => document.getElementById('weather')?.scrollIntoView({behavior: 'smooth'})}>
+          Weather
+        </button>
+        <button onClick={() => document.getElementById('prices')?.scrollIntoView({behavior: 'smooth'})}>
+          Market Prices
+        </button>
+        <button onClick={() => document.getElementById('knowledge')?.scrollIntoView({behavior: 'smooth'})}>
+          Crop Information
+        </button>
+        <button onClick={() => document.getElementById('knowledge')?.scrollIntoView({behavior: 'smooth'})}>
+          Soil Health
+        </button>
+      </div>
+      
+      <div className="footer-column">
+        <h3>Support</h3>
+        <button onClick={() => setShowHelp(true)}>
+          Help Center
+        </button>
+        <button onClick={() => setShowHelp(true)}>
+          Contact Us
+        </button>
+        <button onClick={() => setShowHelp(true)}>
+          FAQ
+        </button>
+      </div>
+      
+      <div className="footer-column">
+        <h3>Company</h3>
+        <button onClick={() => setShowHelp(true)}>
+          About Us
+        </button>
+        <button onClick={() => setShowHelp(true)}>
+          Privacy Policy
+        </button>
+        <button onClick={() => setShowHelp(true)}>
+          Terms of Service
+        </button>
+      </div>
+    </div>
+  </div>
         
         <div className="footer-bottom">
           <p>&copy; Developed by - Atharva Lole</p>
