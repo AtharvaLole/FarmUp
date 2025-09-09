@@ -1,127 +1,213 @@
+/* Navbar.css */
 .navbar {
-  background-color: #3A7D34; /* Deep green for lush fields */
-  color: #FFFFFF;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow for depth */
-  font-family: 'Poppins', sans-serif; /* Modern yet approachable font */
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(46, 125, 50, 0.1);
   z-index: 1000;
-  background-image: linear-gradient(to right, #3A7D34, #4A9B3E); /* Gradient for vibrancy */
+  transition: all 0.3s ease;
+  padding: 0.5rem 0;
+}
+
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 0.3rem 0;
 }
 
 .navbar-container {
-  max-width: 1280px; /* Slightly wider for modern screens */
-  margin: auto;
-  padding: 16px 24px; /* Increased padding for better spacing */
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
 .navbar-logo {
-  font-size: 26px; /* Slightly larger for prominence */
-  font-weight: 700;
-  letter-spacing: 1px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: #2e7d32;
+  text-decoration: none;
 }
 
-.navbar-logo::before {
-  content: '';
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  background-image: url('https://img.icons8.com/color/48/000000/wheat.png'); /* Wheat icon for farmer theme */
-  background-size: cover;
-  filter: brightness(1.2);
+.logo-icon {
+  margin-right: 0.5rem;
+  font-size: 1.8rem;
+}
+
+.logo-text {
+  background: linear-gradient(135deg, #2e7d32, #4caf50);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .navbar-links {
   display: flex;
-  gap: 24px; /* Increased gap for clarity */
+  gap: 1.5rem;
 }
 
 .navbar-link {
-  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #5a5a5a;
   text-decoration: none;
   font-weight: 500;
-  font-size: 16px;
-  padding: 8px 12px;
-  border-radius: 4px;
-  transition: background-color 0.3s, color 0.3s, transform 0.2s;
-  text-transform: uppercase; /* For a bold, clear look */
+  padding: 0.5rem 0.8rem;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .navbar-link:hover {
-  color: #FFCA28; /* Saffron yellow for hover */
-  background-color: rgba(255, 202, 40, 0.1); /* Subtle hover background */
-  transform: translateY(-2px); /* Slight lift effect */
+  color: #2e7d32;
+  background: rgba(76, 175, 80, 0.1);
 }
 
-.navbar-toggle {
-  display: none;
-  background: none;
+.navbar-link.active {
+  color: #2e7d32;
+  background: rgba(76, 175, 80, 0.15);
+  font-weight: 600;
+}
+
+.navbar-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background: #2e7d32;
+  border-radius: 50%;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.translate-wrapper {
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+}
+
+.menu-button {
+  background: #f1f8e9;
   border: none;
+  border-radius: 8px;
+  padding: 0.5rem;
+  color: #2e7d32;
   cursor: pointer;
-  padding: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.navbar-toggle::before {
-  content: '\2630'; /* Hamburger icon */
-  font-size: 24px;
-  color: #FFFFFF;
+.menu-button:hover {
+  background: #2e7d32;
+  color: white;
 }
 
 .navbar-mobile {
-  padding: 12px 24px;
-  display: none; /* Hidden by default, shown on mobile */
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  height: 0;
+  background: white;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-mobile.open {
+  height: calc(100vh - 60px);
+}
+
+.mobile-nav-content {
+  padding: 1.5rem;
+  display: flex;
   flex-direction: column;
-  background-color: #3A7D34;
-  background-image: linear-gradient(to bottom, #3A7D34, #326B2C);
-  border-top: 2px solid #FFCA28; /* Saffron border for flair */
 }
 
 .mobile-link {
-  margin: 10px 0;
-  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1rem 0;
+  color: #5a5a5a;
   text-decoration: none;
-  font-size: 18px;
   font-weight: 500;
-  padding: 8px;
-  border-radius: 4px;
-  transition: color 0.3s, background-color 0.3s;
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
 }
 
 .mobile-link:hover {
-  color: #FFCA28;
-  background-color: rgba(255, 202, 40, 0.15);
+  color: #2e7d32;
 }
 
-@media (max-width: 768px) {
+.mobile-link.active {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.mobile-translate {
+  margin-top: 1.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* Google Translate customization */
+.goog-te-gadget {
+  font-family: inherit !important;
+}
+
+.goog-te-gadget .goog-te-combo {
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  color: #5a5a5a;
+  font-family: inherit;
+}
+
+/* Responsive design */
+@media (max-width: 968px) {
   .navbar-links {
     display: none;
   }
+  
+  .translate-wrapper {
+    display: none;
+  }
+}
 
+@media (min-width: 969px) {
   .navbar-toggle {
-    display: block;
+    display: none;
   }
-
-  .navbar-mobile.active {
-    display: flex; /* Show mobile menu when active */
+  
+  .navbar-mobile {
+    display: none;
   }
 }
 
-#google_translate_element {
-  margin: 12px 0;
-  text-align: right;
-}
-
-.goog-te-gadget {
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  color: #4A2F1A !important; /* Earthy brown for translation widget */
-  background-color: #FFF3E0; /* Light saffron background */
-  padding: 4px 8px;
-  border-radius: 4px;
+@media (max-width: 480px) {
+  .navbar-container {
+    padding: 0 1rem;
+  }
+  
+  .logo-text {
+    font-size: 1.3rem;
+  }
 }

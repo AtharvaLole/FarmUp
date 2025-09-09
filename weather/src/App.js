@@ -4,6 +4,7 @@ import {BrowserRouter,Route, Routes } from 'react-router-dom'
 import Cropinfo from './Cropinfo'
 import "./App.css"
 import Fertilizerguide from './Fertilizerguide'
+import Landing from './Landing'
 function App() {
   return (
     <>
