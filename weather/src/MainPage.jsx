@@ -13,7 +13,6 @@ import farmBg from "./assets/farm-bg.jpg";
 import farmerHero from "./assets/farmer-hero.jpg";
 import cropPattern from "./assets/crop-pattern.jpg";
 import soilTexture from "./assets/soil-texture.jpg";
-import weatherIcon from "./assets/weather-icon.jpg";
 import priceGraphic from "./assets/price-graphic.jpg";
 import knowledgeGraphic from "./assets/knowledge-graphic.jpg";
 
