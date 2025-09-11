@@ -37,7 +37,7 @@ function MainPage() {
   const [showclouds, setShowclouds] = useState("");
   const [showWeatherInfo, setShowWeatherInfo] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [crop, setCrop] = useState("");
+  const [crops, setCrops] = useState([]);
   const [favorites, setFavorites] = useState([]);
   const [forecastData, setForecastData] = useState([]);
   const [showHelp, setShowHelp] = useState(false);
@@ -84,43 +84,84 @@ function MainPage() {
     };
   }, []);
 
-  const getRecommendedCrop = async (N, P, K, temperature, humidity, ph, rainfall) => {
-    try {
-      const res = await fetch("https://weather-backend-k3ik.onrender.com/recommend-crop", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ N, P, K, temperature, humidity, ph, rainfall }),
-      });
-      if (!res.ok) throw new Error("Failed to fetch crop recommendation");
-      const data = await res.json();
-      setCrop(data.recommended_crop);
-    } catch (err) {
-      console.error(err);
-      setCrop("Unable to get crop recommendation");
-    }
-  };
-  
-  const handleFetchPrice = () => {
-    if (!selectedCommodity.trim() || !selectedMarket.trim()) return;
-    setLoadingprice(true);
-    getdailyprice(selectedCommodity.trim(), selectedMarket.trim()).then((data) => {
-      setRecords(data || []);
-      setLoadingprice(false);
+const getRecommendedCrop = async (N, P, K, temperature, humidity, ph, rainfall) => {
+  try {
+    const res = await fetch("https://weather-backend-k3ik.onrender.com/recommend-crop", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ N, P, K, temperature, humidity, ph, rainfall }),
     });
-  };
+    if (!res.ok) throw new Error("Failed to fetch crop recommendation");
+    const data = await res.json();
 
-  async function getdailyprice(commodity, market) {
-    const API = "579b464db66ec23bdd00000192435d865f9347b165ab85defee07ea0";
-    const res = await fetch(
-      `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${API}&format=json&filters[commodity]=${commodity}&filters[market]=${market}&limit=10`
-    );
-    if (!res.ok) {
-      return "Failed to fetch!";
-    }
-    const dat = await res.json();
-    console.log(dat.records);
-    return dat.records;
+    // Backend returns: { recommended_crops: [ {crop, probability}, ... ] }
+    setCrops(data.recommended_crops || []);
+  } catch (err) {
+    console.error(err);
+    setCrops([]);
   }
+};
+  
+  const handleFetchPrice = async () => {
+  if (!selectedCommodity.trim() || !selectedMarket.trim()) {
+    alert("Please enter both commodity and market name");
+    return;
+  }
+  
+  setLoadingprice(true);
+  setRecords([]);
+  
+  try {
+    const data = await getdailyprice(selectedCommodity.trim(), selectedMarket.trim());
+    setRecords(data || []);
+  } catch (error) {
+    console.error("Error in handleFetchPrice:", error);
+
+
+  } finally {
+    setLoadingprice(false);
+  }
+};
+
+ async function getdailyprice(commodity, market) {
+  try {
+    const encodedCommodity = encodeURIComponent(commodity.trim());
+    const encodedMarket = encodeURIComponent(market.trim());
+
+    // Use correct query param keys as expected by backend: "Commodity" and "Market"
+    const apiUrl = `https://weather-backend-k3ik.onrender.com/prices?commodity=${encodedCommodity}&market=${encodedMarket}`;
+
+    console.log("Fetching from:", apiUrl);
+
+    const res = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      mode: 'cors'
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
+
+    const dat = await res.json();
+    console.log("API Response:", dat);
+
+    if (Array.isArray(dat) && dat.length > 0) {
+      return dat;
+    } else {
+      alert("No records found");
+      return [];
+    }
+  } catch (error) {
+    console.error("Error fetching price data:", error);
+    return [];
+  }
+}
+
+
 
   async function getdata(cityname) {
     const API_KEY = "f4da84f03e8399fa676a9bcf3c0030af";
@@ -171,7 +212,7 @@ function MainPage() {
         setWeather('');
         setTemp('');
         setShowclouds('');
-        setCrop('');
+        setCrops([]);
         setForecastData([]);
       }
     } catch (error) {
@@ -179,7 +220,7 @@ function MainPage() {
       setWeather('');
       setTemp('');
       setShowclouds('');
-      setCrop('');
+      setCrops([]);
       setForecastData([]);
     }
     setShowWeatherInfo(true);
@@ -357,10 +398,16 @@ function MainPage() {
                         <span className="detail-value">{location}</span>
                       </div>
                     </div>
-                    {crop && (
+                    {crops.length > 0 && (
                       <div className="crop-recommendation">
-                        <h3>🌾 Recommended Crop:</h3>
-                        <p>{crop}</p>
+                        <h3>🌾 Top Crop Recommendations:</h3>
+                        <ul>
+                          {crops.map((item, idx) => (
+                            <li key={idx}>
+                              {item.crop} — <strong>{item.probability}%</strong>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                     )}
                   </>
@@ -447,12 +494,13 @@ function MainPage() {
               <div className="agri-price-cards">
                 {records.map((item, idx) => (
                   <div key={idx} className="agri-card">
-                    <h3 className="agri-commodity">🌿 {item.commodity}</h3>
-                    <p><strong>📍 Mandi:</strong> {item.market}, {item.district}</p>
-                    <p><strong>📆 Date:</strong> {item.arrival_date}</p>
-                    <p><strong>💰 Modal Price:</strong> ₹{item.modal_price} / {item.unit_of_price || "quintal"}</p>
-                    <p><strong>📉 Min:</strong> ₹{item.min_price} &nbsp; | &nbsp; <strong>📈 Max:</strong> ₹{item.max_price}</p>
-                    <p><strong>🌾 Variety:</strong> {item.variety || "N/A"}</p>
+                    <h3 className="agri-commodity">🌿 {item["Commodity"]}</h3>
+                    <p><strong>📍 Mandi:</strong> {item["Market"]}, {item["District"]}</p>
+                    <p><strong>📆 Date:</strong> {item["Arrival_Date"]}</p>
+                    <p><strong>💰 Modal Price:</strong> ₹{item["Modal_Price"]} / quintal</p>
+                    <p><strong>📉 Min:</strong> ₹{item["Min_Price"]} &nbsp; | &nbsp; <strong>📈 Max:</strong> ₹{item["Max_Price"]}</p>
+                    <p><strong>🌾 Variety:</strong> {item["Variety"] || "N/A"}</p>
+
                   </div>
                 ))}
               </div>
@@ -529,6 +577,7 @@ function MainPage() {
           </Carousel>
         </div>
       </section>
+      
 
       {/* Footer */}
 <footer className="footer">
